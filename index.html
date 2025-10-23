@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadratic Solver & Grade Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 1.05em;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px 24px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result.success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+
+        .result h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .result-detail {
+            margin: 10px 0;
+            font-size: 1.05em;
+            line-height: 1.6;
+        }
+
+        .result-detail strong {
+            color: #667eea;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 2em;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📐 Quadratic Solver & Grade Calculator</h1>
+            <p>Solve quadratic equations and convert scores to letter grades</p>
+        </header>
+
+        <!-- Quadratic Solver Section -->
+        <div class="card">
+            <h2>Quadratic Equation Solver</h2>
+            <p style="margin-bottom: 20px; color: #666;">Solve equations of the form: ax² + bx + c = 0</p>
+            
+            <div class="input-row">
+                <div class="form-group">
+                    <label for="coeffA">Coefficient a:</label>
+                    <input type="number" id="coeffA" step="any" placeholder="e.g., 1">
+                    <div id="errorA" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <label for="coeffB">Coefficient b:</label>
+                    <input type="number" id="coeffB" step="any" placeholder="e.g., -3">
+                    <div id="errorB" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <label for="coeffC">Coefficient c:</label>
+                    <input type="number" id="coeffC" step="any" placeholder="e.g., 2">
+                    <div id="errorC" class="error-message"></div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="btn-primary" onclick="solveQuadratic()">Solve Equation</button>
+                <button type="button" class="btn-secondary" onclick="resetQuadratic()">Reset</button>
+            </div>
+
+            <div id="quadraticResult" class="result"></div>
+        </div>
+
+        <!-- Grading System Section -->
+        <div class="card">
+            <h2>Score to Grade Converter</h2>
+            <p style="margin-bottom: 20px; color: #666;">Enter a score between 0 and 100 to get the letter grade</p>
+            
+            <div class="form-group">
+                <label for="score">Score (0-100):</label>
+                <input type="number" id="score" min="0" max="100" step="0.01" placeholder="Enter score">
+                <div id="errorScore" class="error-message"></div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="btn-primary" onclick="calculateGrade()">Calculate Grade</button>
+                <button type="button" class="btn-secondary" onclick="resetGrading()">Reset</button>
+            </div>
+
+            <div id="gradingResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Quadratic Equation Solver
+        function solveQuadratic() {
+            // Clear previous errors and results
+            document.getElementById('errorA').textContent = '';
+            document.getElementById('errorA').classList.remove('show');
+            document.getElementById('errorB').textContent = '';
+            document.getElementById('errorB').classList.remove('show');
+            document.getElementById('errorC').textContent = '';
+            document.getElementById('errorC').classList.remove('show');
+            
+            // Get input values
+            const aInput = document.getElementById('coeffA').value;
+            const bInput = document.getElementById('coeffB').value;
+            const cInput = document.getElementById('coeffC').value;
+            
+            let hasError = false;
+            
+            // Validate coefficient a
+            if (aInput === '') {
+                document.getElementById('errorA').textContent = 'Please enter a value for coefficient a';
+                document.getElementById('errorA').classList.add('show');
+                hasError = true;
+            } else {
+                const a = parseFloat(aInput);
+                if (isNaN(a)) {
+                    document.getElementById('errorA').textContent = 'Coefficient a must be a valid number';
+                    document.getElementById('errorA').classList.add('show');
+                    hasError = true;
+                } else if (a === 0) {
+                    document.getElementById('errorA').textContent = 'Coefficient a cannot be zero (not a quadratic equation)';
+                    document.getElementById('errorA').classList.add('show');
+                    hasError = true;
+                }
+            }
+            
+            // Validate coefficient b
+            if (bInput === '') {
+                document.getElementById('errorB').textContent = 'Please enter a value for coefficient b';
+                document.getElementById('errorB').classList.add('show');
+                hasError = true;
+            } else {
+                const b = parseFloat(bInput);
+                if (isNaN(b)) {
+                    document.getElementById('errorB').textContent = 'Coefficient b must be a valid number';
+                    document.getElementById('errorB').classList.add('show');
+                    hasError = true;
+                }
+            }
+            
+            // Validate coefficient c
+            if (cInput === '') {
+                document.getElementById('errorC').textContent = 'Please enter a value for coefficient c';
+                document.getElementById('errorC').classList.add('show');
+                hasError = true;
+            } else {
+                const c = parseFloat(cInput);
+                if (isNaN(c)) {
+                    document.getElementById('errorC').textContent = 'Coefficient c must be a valid number';
+                    document.getElementById('errorC').classList.add('show');
+                    hasError = true;
+                }
+            }
+            
+            if (hasError) {
+                document.getElementById('quadraticResult').classList.remove('show');
+                return;
+            }
+            
+            // All inputs are valid, convert to numbers
+            const a = parseFloat(aInput);
+            const b = parseFloat(bInput);
+            const c = parseFloat(cInput);
+            
+            // Calculate discriminant
+            const discriminant = (b * b) - (4 * a * c);
+            
+            // Build result HTML
+            let resultHTML = '<h3>Solution:</h3>';
+            resultHTML += '<div class="result-detail"><strong>Equation:</strong> ' + a + 'x² + ' + b + 'x + ' + c + ' = 0</div>';
+            resultHTML += '<div class="result-detail"><strong>Discriminant (D):</strong> ' + discriminant.toFixed(4) + '</div>';
+            
+            if (discriminant > 0) {
+                // Two distinct real roots
+                const root1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                const root2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+                resultHTML += '<div class="result-detail"><strong>Nature of roots:</strong> Two distinct real roots</div>';
+                resultHTML += '<div class="result-detail"><strong>Root 1:</strong> x₁ = ' + root1.toFixed(4) + '</div>';
+                resultHTML += '<div class="result-detail"><strong>Root 2:</strong> x₂ = ' + root2.toFixed(4) + '</div>';
+            } else if (discriminant === 0) {
+                // One repeated real root
+                const root = -b / (2 * a);
+                resultHTML += '<div class="result-detail"><strong>Nature of roots:</strong> One real repeated root</div>';
+                resultHTML += '<div class="result-detail"><strong>Root:</strong> x = ' + root.toFixed(4) + '</div>';
+            } else {
+                // Two complex conjugate roots
+                const realPart = -b / (2 * a);
+                const imaginaryPart = Math.sqrt(-discriminant) / (2 * a);
+                resultHTML += '<div class="result-detail"><strong>Nature of roots:</strong> Two complex conjugate roots</div>';
+                resultHTML += '<div class="result-detail"><strong>Root 1:</strong> x₁ = ' + realPart.toFixed(4) + ' + ' + imaginaryPart.toFixed(4) + 'i</div>';
+                resultHTML += '<div class="result-detail"><strong>Root 2:</strong> x₂ = ' + realPart.toFixed(4) + ' - ' + imaginaryPart.toFixed(4) + 'i</div>';
+            }
+            
+            // Display result
+            const resultDiv = document.getElementById('quadraticResult');
+            resultDiv.innerHTML = resultHTML;
+            resultDiv.className = 'result show success';
+        }
+
+        function resetQuadratic() {
+            document.getElementById('coeffA').value = '';
+            document.getElementById('coeffB').value = '';
+            document.getElementById('coeffC').value = '';
+            document.getElementById('errorA').textContent = '';
+            document.getElementById('errorA').classList.remove('show');
+            document.getElementById('errorB').textContent = '';
+            document.getElementById('errorB').classList.remove('show');
+            document.getElementById('errorC').textContent = '';
+            document.getElementById('errorC').classList.remove('show');
+            document.getElementById('quadraticResult').classList.remove('show');
+        }
+
+        // Grading System
+        function calculateGrade() {
+            // Clear previous errors
+            document.getElementById('errorScore').textContent = '';
+            document.getElementById('errorScore').classList.remove('show');
+            
+            // Get input value
+            const scoreInput = document.getElementById('score').value;
+            
+            // Validate input
+            if (scoreInput === '') {
+                document.getElementById('errorScore').textContent = 'Please enter a score';
+                document.getElementById('errorScore').classList.add('show');
+                document.getElementById('gradingResult').classList.remove('show');
+                return;
+            }
+            
+            const score = parseFloat(scoreInput);
+            
+            if (isNaN(score)) {
+                document.getElementById('errorScore').textContent = 'Score must be a valid number';
+                document.getElementById('errorScore').classList.add('show');
+                document.getElementById('gradingResult').classList.remove('show');
+                return;
+            }
+            
+            if (score < 0 || score > 100) {
+                document.getElementById('errorScore').textContent = 'Score must be between 0 and 100';
+                document.getElementById('errorScore').classList.add('show');
+                document.getElementById('gradingResult').classList.remove('show');
+                return;
+            }
+            
+            // Round score to nearest integer for grading
+            const roundedScore = Math.round(score);
+            
+            // Determine grade based on exact ranges
+            let grade;
+            if (roundedScore >= 85 && roundedScore <= 100) {
+                grade = 'A+';
+            } else if (roundedScore >= 75 && roundedScore <= 84) {
+                grade = 'A';
+            } else if (roundedScore >= 65 && roundedScore <= 74) {
+                grade = 'B+';
+            } else if (roundedScore >= 60 && roundedScore <= 64) {
+                grade = 'B';
+            } else if (roundedScore >= 55 && roundedScore <= 59) {
+                grade = 'C+';
+            } else if (roundedScore >= 50 && roundedScore <= 54) {
+                grade = 'C';
+            } else {
+                grade = 'D';
+            }
+            
+            // Build result HTML
+            let resultHTML = '<h3>Grade Result:</h3>';
+            if (score !== roundedScore) {
+                resultHTML += '<div class="result-detail">Score <strong>' + score + '</strong> (rounded to <strong>' + roundedScore + '</strong>)</div>';
+            }
+            resultHTML += '<div class="result-detail" style="font-size: 1.3em;">Score <strong>' + roundedScore + '</strong> → Grade <strong style="font-size: 1.4em; color: #667eea;">' + grade + '</strong></div>';
+            
+            // Display result
+            const resultDiv = document.getElementById('gradingResult');
+            resultDiv.innerHTML = resultHTML;
+            resultDiv.className = 'result show success';
+        }
+
+        function resetGrading() {
+            document.getElementById('score').value = '';
+            document.getElementById('errorScore').textContent = '';
+            document.getElementById('errorScore').classList.remove('show');
+            document.getElementById('gradingResult').classList.remove('show');
+        }
+    </script>
+</body>
+</html>
