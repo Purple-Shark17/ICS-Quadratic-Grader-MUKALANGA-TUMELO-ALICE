@@ -1,2 +1,2 @@
 # ICS-Quadratic-Grader-MUKALANGA-TUMELO-ALICE
-"ICS project:built with HTML,CSS and JAVASCRIPT.Solves quadratic equations(handles real and complex roots) and includes a grading system.
+"A web application that solves quadratic equations and calculates letter grades based on scores"
